@@ -1,10 +1,29 @@
 #include <stdio.h>
+#include <cs50.h>
+
+void clear_screen(void) {
+    // ANSI escape code to clear the screen
+    printf("\033[H\033[J");
+}
 
 void print_rows(int n, int padding);
 int main(void)
 {
-    const int total_height = 8;
-    int initial_padding = total_height - 1;
+    int total_height;
+    int initial_padding;
+    
+    do {
+        total_height = get_int("how tall you want your tree to be? ");
+        if (total_height < 1) {
+            puts("⚠ [WARNING]: tree needs to be at least 1 unit tall");
+            puts("");
+        }
+        
+        initial_padding = total_height - 1;
+    } while (total_height < 1);
+    clear_screen();
+    
+
     int total_width = 1;
     
     for (int i = 0; i < total_height; i++) {
@@ -24,10 +43,8 @@ int main(void)
 void print_rows(int n, int padding)
 {
     // Print padding spaces
-    for (int j = 0; j < padding; j++) {
-        putchar(' ');
-    }
-    
+    printf("%*s", padding, "");
+
     // Print stars
     for (int i = 0; i < n; i++) {
         printf("*");
