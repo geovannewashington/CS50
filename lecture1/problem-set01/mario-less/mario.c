@@ -15,9 +15,10 @@ e.g:
 
 it's essentially a square, so the base = height
 */
+int initial = 1;
 
 void draw_pym(int pym_heigth);
-void print_line();
+void print_line(int pym_heigth);
 
 int main(void)
 {
@@ -41,18 +42,15 @@ void draw_pym(int pym_height)
 
 void print_line(int pym_height) 
 {
-    int initial = 1;
-
-    // we need first to print the left padding (blank spaces)
-    printf("|%*s|", pym_height, "");
-
-    // print the hash characters
-    // Hardcoding 5 for now...
-    for (int i = 0; i < initial; i++) {
+    if ((pym_height - initial) != 0) {
+        printf("%*s", pym_height - initial, " ");
+    } 
+    
+    for (int i = 0; i < initial; ++i) {
         printf("#");
-        initial++;
     }
 
-    printf("\n");
+    printf("\n");    
+    initial++;
 }
 
