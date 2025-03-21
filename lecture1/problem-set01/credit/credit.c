@@ -1,6 +1,5 @@
 #include <cs50.h>
 #include <stdio.h>
-#include <stdio.h>
 
 /* CS50: The credit problem */
 
@@ -11,20 +10,20 @@ const int VISA = 4; //probably won't need this
 void get_first_two_nums(int *digits, float *arr);
 void check_company();
 void is_valid(); // -> Luhn's Algorithm
-void convert_input_arr(float input, char *credit_Arr);
+void convert_input_arr(long int input, char *credit_Arr);
 int get_str_length(char *input);
 
 int main(void)
 {
-    float testing = get_long("Number: "); // -> I need somehow turn this into an array
+    long int testing = get_long("Number: "); // -> I need somehow turn this into an array
     int digits[2];
     char credit_Arr[20]; 
-    convert_input_arr(testing, credit_Arr);    
-    int str_length = get_str_length(credit_Arr);    
-    printf("%d\n", str_length);
+    convert_input_arr(testing, credit_Arr);
+    int str_length = get_str_length(credit_Arr); 
+    printf("Quantity of numbers inserted: %d\n", str_length);
 
-    for (int i = 0; i < 20; i++)
-    // printf("%c", credit_Arr[i]);
+    for (int i = 0; i < str_length; i++)
+        printf("%c", credit_Arr[i]);
     // get_first_two_nums(digits, credit);
     
     for (int i = 0; i < 2; ++i) 
@@ -39,9 +38,9 @@ void get_first_two_nums(int *digits, float *arr)
         digits[i] = arr[i];
 }
 
-void convert_input_arr(float input, char *credit_Arr)
+void convert_input_arr(long int input, char *credit_Arr)
 {
-    sprintf(credit_Arr, "%f", input);
+    sprintf(credit_Arr, "%ld", input);
 }
 
 int get_str_length(char *input) 
