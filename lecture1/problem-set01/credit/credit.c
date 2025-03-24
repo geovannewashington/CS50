@@ -29,27 +29,29 @@ int main(void)
 bool is_valid(char *input, int input_length)
 {
     bool is_legit = false;
-    int sum_arr[20];
-    int j = 0;
-    //printf("%d\n", input[input_length - 2] - '0'); 
-    // this is printing 49 when it should be 1
-    // becuase it's actually a character
+    int even_arr[20];
+    int odd_arr[20];
+    printf("INPUT LENGTH: %d\n", input_length);
 
-    for (int i = 2; i <= input_length; i += 2) {
-        // NOTE: we are not getting the first number input[0]
-        // printf("TEST: %d\n", (input[input_length - i] - '0') * 2);
-        sum_arr[j] += (input[input_length - i] - '0') * 2;
-        j++;
-        // printf("%d\n", sum);
+    for (int i = 0; i < input_length; ++i) {
+        if (i % 2 == 0) {
+            even_arr[i] = (input[i] - '0') * 2;      
+        } else {
+            odd_arr[i] = (input[i] - '0');      
+        }
     }
-    
-    for (int i = 0; i < 16; i++)
-        printf("%d", sum_arr[i]);
+     
+    for (int i = 0; i < 16; i++) {
+        if (i % 2 == 0) 
+            printf("even: %d\n", even_arr[i]);
+        else 
+            printf("odd: %d\n", odd_arr[i]);
 
-    //printf("%d\n", sum); 
+    }
+
     // we can first call this function 
     // and then use it's boolean return value on discover_company
-    //return is_legit;
+    return is_legit;
 }
 //TODO: credit number NEEDS to pass both validations, that is, function: is_valid AND discover_company
 
