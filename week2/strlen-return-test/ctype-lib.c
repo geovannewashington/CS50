@@ -1,8 +1,9 @@
 #include <cs50.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
-/* Second version: convert case program */
+/* Third version: convert case program (now using the ctype header file)*/
 void convert_case(char string[]);
 
 int main(int argc, char *agrv[])
@@ -18,14 +19,14 @@ void convert_case(char string[])
 {
     for (int i = 0, length = strlen(string); i < length; i++) {
         // check if input is lowercase
-        if (string[i] >= 'a' && string[i] <= 'z') {
-            string[i] -= 32;
+        if (islower(string[i])) {
+            string[i] = toupper(string[i]);
             continue;
         } 
         
         // check if input is uppercase
-        if (string[i] >= 'A' && string[i] <= 'Z') {
-            string[i] += 32;
+        if (isupper(string[i])) {
+            string[i] = tolower(string[i]);
         } 
     }
 }
