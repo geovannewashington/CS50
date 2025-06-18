@@ -7,6 +7,7 @@ void clear_screen(void) {
 }
 
 void print_rows(int n, int padding);
+
 int main(void)
 {
     int total_height;
