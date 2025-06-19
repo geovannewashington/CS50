@@ -4,30 +4,41 @@
 #include <string.h>
 
 int convert_str_int(char str[]);
+void encrypt(char plaintext[], int key);
+
+// NOTE: to remember: the result of the equation: c_1 = (p_1 + k) % 26 is the position of
+// the cipher character at the alphabet starting from zero, that is, a = 0, b = 1 and so on...
+// also there is not need to use hash maps altought we could be done using it.
 
 int main(int argc, char *argv[])
 {
-    // Assumes argv[1], which is the key, is valid by default 
-    int is_arg_valid = 1;
-
-    // where k is key
-    // Since argv[1] must be a string we need to convert it into an integer.
-    int k = convert_str_int(argv[1]);
-
-    for (int i = 0, k_len = strlen(argv[1]); i < k_len; i++) 
-        if (!isdigit(argv[1][i]))
-            is_arg_valid = 0; // -> if it's not a digit then it's not valid
-   
+    // Makes sure program was run with just one command-line argument.
     if (argc == 1 || argc > 2) {
         printf("Number of arguments passed is to little or too much");
         return 1;
     } 
-
-    //  TODO: This needs to be inside a loop tho.
+    
+    // Makes sure every character in argv[1] is a digit.
+    // Assumes argv[1], which is the key, is valid by default 
+    int is_arg_valid = 1;
+    for (int i = 0, k_len = strlen(argv[1]); i < k_len; i++) 
+        if (!isdigit(argv[1][i]))
+            is_arg_valid = 0; // -> if it's not a digit then it's not valid
+    // where k is key
+    // Since argv[1] must be a string we need to convert it into an integer.
+   
+    // Convert argv[1] from a 'string' to an 'int'
+    int k = convert_str_int(argv[1]);
+   
     if (is_arg_valid == 0 || k < 0) {
         printf("Usage: ./caeser key\n");
+        return 1;
     } 
-   
+
+    // Prompt user for plaintext. 
+    string plaintext = get_string("plaintext  ");  
+
+    encrypt();
     return 0;
 }
 
@@ -59,7 +70,15 @@ int convert_str_int(char str[])
     return resolution;
 }
 
+void encrypt(char plaintext[], int key) 
+{
+    char ciphertext[strlen(plaintext)];
+    // for each character of plaintext:
+        // rotate 'key' times if it's a letter;
+        // if it's not a letter remain untouched
 
+    //  NOTE: print: printf("%s %s\n", "ciphertext: ", ciphertext);
+}
 
 
 
