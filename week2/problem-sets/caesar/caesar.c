@@ -84,16 +84,19 @@ void encrypt(char plaintext[], int key)
     int plaintext_len = strlen(plaintext);
     char ciphertext[plaintext_len];
     
-    for (int i = 0; i < plaintext_len; i++) {
+    // NOTE : plaintext_len + 1 to make sure ciphertext also get's the null character copied
+    // since strlen does not include it.
+    
+    for (int i = 0; i < plaintext_len + 1; i++) {
         char current = plaintext[i]; 
         int char_position; 
         
         if (isalpha(current)) {
             if (isupper(current)) {
-                int char_position = current - FIRST_CAPITAL;
+                char_position = current - FIRST_CAPITAL;
                 ciphertext[i] = ((char_position + key) % 26) + FIRST_CAPITAL;
             } else {
-                int char_position = current - FIRST_LOWER;
+                char_position = current - FIRST_LOWER;
                 ciphertext[i] = ((char_position + key) % 26) + FIRST_LOWER;
             }
         } else {
