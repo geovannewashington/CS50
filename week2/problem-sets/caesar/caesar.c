@@ -3,8 +3,10 @@
 #include <ctype.h>
 #include <string.h>
 
-#define ALPHA_LEN 26
+// First capital alpha character in the ASCII table.
 #define FIRST_CAPITAL 65
+
+// First lower alpha character in the ASCII table.
 #define FIRST_LOWER 97
 
 int convert_str_int(char str[]);
@@ -17,20 +19,11 @@ void encrypt(char plaintext[], int key);
 //  NOTE: for each p_i it's value in the alphabet == it's ascii value - 65 (for capital) or 
 //  - 97 for lowercase
 
-typedef struct {
-    char letter;   
-    int position;
-} alpha_pos; 
-
-alpha_pos lower_chars[ALPHA_LEN] = {
-    {'a', 0}, {'b', 1}, {'c', 2}, {'d', 3},   
-}; 
-
 int main(int argc, char *argv[])
 {
     // Makes sure program was run with just one command-line argument.
     if (argc == 1 || argc > 2) {
-        printf("Number of arguments passed is to little or too much");
+        printf("Number of arguments passed is to little or too much\n");
         return 1;
     } 
     
@@ -52,7 +45,7 @@ int main(int argc, char *argv[])
     } 
 
     // Prompt user for plaintext. 
-    string plaintext = get_string("plaintext  ");  
+    string plaintext = get_string("plaintext:  ");  
 
     encrypt(plaintext, k);
     return 0;
@@ -88,12 +81,27 @@ int convert_str_int(char str[])
 
 void encrypt(char plaintext[], int key) 
 {
-    char ciphertext[strlen(plaintext)];
-    // for each character of plaintext:
-        // rotate 'key' times if it's a letter;
-        // if it's not a letter remain untouched
-
-    //  NOTE: print: printf("%s %s\n", "ciphertext: ", ciphertext);
+    int plaintext_len = strlen(plaintext);
+    char ciphertext[plaintext_len];
+    
+    for (int i = 0; i < plaintext_len; i++) {
+        char current = plaintext[i]; 
+        int char_position; 
+        
+        if (isalpha(current)) {
+            if (isupper(current)) {
+                int char_position = current - FIRST_CAPITAL;
+                ciphertext[i] = ((char_position + key) % 26) + FIRST_CAPITAL;
+            } else {
+                int char_position = current - FIRST_LOWER;
+                ciphertext[i] = ((char_position + key) % 26) + FIRST_LOWER;
+            }
+        } else {
+            // change nothing.
+            ciphertext[i] = current;
+        }
+    }
+    printf("%s%s\n", "ciphertext: ", ciphertext);
 }
 
 
