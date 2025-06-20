@@ -3,12 +3,28 @@
 #include <ctype.h>
 #include <string.h>
 
+#define ALPHA_LEN 26
+#define FIRST_CAPITAL 65
+#define FIRST_LOWER 97
+
 int convert_str_int(char str[]);
 void encrypt(char plaintext[], int key);
 
-// NOTE: to remember: the result of the equation: c_1 = (p_1 + k) % 26 is the position of
+//  NOTE: to remember: the result of the equation: c_1 = (p_1 + k) % 26 is the position of
 // the cipher character at the alphabet starting from zero, that is, a = 0, b = 1 and so on...
-// also there is not need to use hash maps altought we could be done using it.
+// also there is no need to use hash maps altought it could be done using it.
+
+//  NOTE: for each p_i it's value in the alphabet == it's ascii value - 65 (for capital) or 
+//  - 97 for lowercase
+
+typedef struct {
+    char letter;   
+    int position;
+} alpha_pos; 
+
+alpha_pos lower_chars[ALPHA_LEN] = {
+    {'a', 0}, {'b', 1}, {'c', 2}, {'d', 3},   
+}; 
 
 int main(int argc, char *argv[])
 {
@@ -19,8 +35,8 @@ int main(int argc, char *argv[])
     } 
     
     // Makes sure every character in argv[1] is a digit.
-    // Assumes argv[1], which is the key, is valid by default 
-    int is_arg_valid = 1;
+
+    int is_arg_valid = 1; // Assumes argv[1], which is the key, is valid by default 
     for (int i = 0, k_len = strlen(argv[1]); i < k_len; i++) 
         if (!isdigit(argv[1][i]))
             is_arg_valid = 0; // -> if it's not a digit then it's not valid
@@ -38,7 +54,7 @@ int main(int argc, char *argv[])
     // Prompt user for plaintext. 
     string plaintext = get_string("plaintext  ");  
 
-    encrypt();
+    encrypt(plaintext, k);
     return 0;
 }
 
