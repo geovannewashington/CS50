@@ -1,4 +1,4 @@
-#include <cs50.h>
+#include <cs50.h> 
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     if (key_length != 26) 
         is_key_valid = 0;
 
+    // TODO: change this logic
     int j = 0;
     for (int i = 0; i < key_length; i++) {
         // set flag as false and skips 
@@ -37,7 +38,7 @@ int main(int argc, char *argv[])
     
     // if program is executed without any arguments or with more than just a single one
     // print an error message with printf and return 1 
-    if (argc != 2 || !is_key_valid) {
+    if (!is_key_valid) {
         printf("Usage: ./substitution key\n");
         return 1;
     }
@@ -56,13 +57,17 @@ int main(int argc, char *argv[])
 
 void cipher(char plaintext[], char key[], int key_length) 
 {
-    char cipher[strlen(plaintext)];
+    int plain_length = strlen(plaintext) + 1; 
+    char cipher[plain_length];
+
     int i;
-    for (i = 0; i < key_length; i++) {
+    for (i = 0; i < plain_length; i++) { 
         if (isalpha(plaintext[i])) {
             if (isupper(plaintext[i])) {
+                // printf("%c\n", toupper(key[plaintext[i] - 'A']));
                 cipher[i] = toupper(key[plaintext[i] - 'A']);
             } else {
+                // printf("%c\n", tolower(key[plaintext[i] - 'a']));
                 cipher[i] = tolower(key[plaintext[i] - 'a']);
             }
         } else {
@@ -70,9 +75,9 @@ void cipher(char plaintext[], char key[], int key_length)
             cipher[i] = plaintext[i];
         }
     }
-    cipher[i] = '\0';
-    printf("ciphertext: %s", cipher); 
-    putchar('\n');
+    cipher[i + 1] = '\0';
+//    printf("ciphertext: %c\n", cipher[0]); 
+    printf("ciphertext: %s\n", cipher); 
 }
 
 
