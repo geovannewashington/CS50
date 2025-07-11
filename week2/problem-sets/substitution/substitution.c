@@ -2,8 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdbool.h>
 
+//  TODO: implement my own sorting alogrithm with quicksort.
 void cipher(char plaintext[], char key[], int key_length);
+void quick_sort(char key[], int low, int high);
+void copy(char to[], char from[]);
+void swap(char* a, char* b);
+int partition(char key[], int low, int high);
 
 int main(int argc, char *argv[])
 {
@@ -14,30 +20,30 @@ int main(int argc, char *argv[])
         return 1;
     }
     // [FLAG]: assumes key valid by default.  
-    int is_key_valid = 1;
+    bool is_key_valid = true;
     
     // if the key is invalid (not containing 26 chars, containing a char that is not an alphabetic)
     int key_length = strlen(argv[1]);
     
     if (key_length != 26) 
-        is_key_valid = 0;
+        is_key_valid = false;
 
     // TODO: change this logic
-    int j = 0;
     for (int i = 0; i < key_length; i++) {
         // set flag as false and skips 
-        if (!(isalpha(argv[1][i]))) {
-            is_key_valid = 0;
-            continue;
-        }
-        // verify that key contains each letter of alphabet at least once.
-        j += tolower(argv[1][i]);
+        if (!(isalpha(argv[1][i]))) 
+            is_key_valid = false;
     }
-    if (j != 2847)
-        is_key_valid = 0;
-    
+    // verify that key contains each letter of alphabet at least once.
+    char key_copy[key_length];
+    copy(argv[1], key_copy); 
+    quick_sort(key_copy, 0, key_length - 1); 
+    for (int i = 0; i < key_length; i++) {
+        if (key_copy[i] == key_copy[i + 1]) 
+            is_key_valid = false;
+    } 
     // if program is executed without any arguments or with more than just a single one
-    // print an error message with printf and return 1 
+    // print an error message with printf and return 2 
     if (!is_key_valid) {
         printf("Usage: ./substitution key\n");
         return 1;
@@ -53,6 +59,36 @@ int main(int argc, char *argv[])
     // after outputing ciphertext, the program should print a newline.   
     // NOTE: the output must preserve case.
     return 0;
+}
+
+void copy(char to[], char from[]) 
+{
+    int i = 0;
+    while ((from[i] = to[i]) != '\0')
+        i++;
+}
+
+void swap(char* a, char* b) 
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int partition(char key[], int low, int high)  
+{
+    int pivot = key[high]; // -> our pivot in this case is the last element
+    int i = low - 1; // initially 'i' == -1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (key[j] < pivot) {
+            i++;
+            swap(&key[i], &key[j]);
+        }
+    }
+
+    swap(&key[i + 1], &key[high]);
+    return i + 1;
 }
 
 void cipher(char plaintext[], char key[], int key_length) 
@@ -80,7 +116,15 @@ void cipher(char plaintext[], char key[], int key_length)
     printf("ciphertext: %s\n", cipher); 
 }
 
+// TODO: finish this function, study: sorting algorithm
+void quick_sort(char key[], int low, int high) {
+    if (low < high) {
+        int pi = partition(key, low, high);        
 
+        quick_sort(key, low, pi - 1);
+        quick_sort(key, pi + 1, high);
+    }
+}
 
 
 

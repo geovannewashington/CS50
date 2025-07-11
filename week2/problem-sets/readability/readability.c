@@ -21,7 +21,7 @@ int main(void)
 
     // Compute the Coleman-Liau index
     // index = 0.0588 * L - 0.296 * S - 15.8
-    float L = letters * (100 / (float) words);
+    float L= letters * (100 / (float) words);
     float S = ((float) sentences / (float) words) * 100;
     
     int index = round((0.0588 * L - 0.296 * S - 15.8));
