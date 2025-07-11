@@ -38,9 +38,11 @@ int main(int argc, char *argv[])
     char key_copy[key_length];
     copy(argv[1], key_copy); 
     quick_sort(key_copy, 0, key_length - 1); 
+
     for (int i = 0; i < key_length; i++) {
-        if (key_copy[i] == key_copy[i + 1]) 
+        if (tolower(key_copy[i] ) == tolower(key_copy[i + 1]))  {
             is_key_valid = false;
+        }
     } 
     // if program is executed without any arguments or with more than just a single one
     // print an error message with printf and return 2 
@@ -61,10 +63,11 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void copy(char to[], char from[]) 
+// the first argument is the key itself
+void copy(char from[], char to[]) 
 {
     int i = 0;
-    while ((from[i] = to[i]) != '\0')
+    while ((to[i] = tolower(from[i])) != '\0')
         i++;
 }
 
