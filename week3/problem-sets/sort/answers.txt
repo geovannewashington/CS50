@@ -1,0 +1,21 @@
+sort1 uses: 
+Bubble Sort 
+
+How do you know?: 
+Because it was faster [O(n)] for a large file (sorted50000.txt) than sort2 [O(n log n)] for the same file
+and it was roughly the sime time for the worst case as sort3 algorithm [O(n^2)] 
+
+sort2 uses: 
+Merge Sort 
+
+How do you know?: 
+Because it had little difference between the worst case (unsorted list) and best case (sorted list)
+While being faster than sort3
+
+
+sort3 uses: 
+Selection Sort
+
+How do you know?: 
+Because it had little difference between the worst case (unsorted list) and best case (sorted list)
+While being slower than sort2
