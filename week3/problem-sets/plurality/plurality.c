@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     
     for (int i = 0; i < candidate_count; i++)
     {
-        candidates[i].name = argv[i + 1];
+        candidates[i].name = argv[i + 1]; // + 1 because argv[0] would be the program name
         candidates[i].votes = 0;
     }
 
@@ -54,10 +54,9 @@ int main(int argc, char *argv[])
         string name = get_string("Vote: ");
 
         // Check for invalid vote
-        if (!vote(name))
-        {
+        if (!vote(name)) 
             printf("Invalid vote.\n");
-        }
+
     }
 
     // Display winner of election
@@ -65,9 +64,19 @@ int main(int argc, char *argv[])
 }
 
 // Update vote totals given a new vote
-bool vote(string name)
+bool vote(char *name)
 {
     // TODO
+    // Check whether cadidate exits, returns false case candidate doesn't exist.
+    // Increment votes (prabably going to use strcmp within a for loop here)
+    for (int i = 0; i < candidate_count; i++) {
+        // check if candidate even exists
+        if (strcmp(candidates[i].name, name) == 0) {
+            candidates[i].votes += 1; // increment a vote in candidates[i], case found
+            return true; // return control to main so user can pass more candidates names 
+        }
+    }
+    // return false case no candidate with given name was found.
     return false;
 }
 
@@ -75,5 +84,29 @@ bool vote(string name)
 void print_winner(void)
 {
     // TODO
+    int max_vote = candidates[0].votes; // stores the current max number of votes for a single candidate.
+    
+    for (int i = 0; i < candidate_count; i++) {
+        if (candidates[i].votes > max_vote) 
+            max_vote = candidates[i].votes;
+    }
+    // to print...
+    for (int i = 0; i < candidate_count; i++) {
+        if (candidates[i].votes == max_vote)
+            printf("%s\n", candidates[i].name);
+    }
+    // printf("%d\n", max_vote);
     return;
 }
+
+
+
+
+
+
+
+
+
+
+
+
