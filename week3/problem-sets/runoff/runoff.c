@@ -1,6 +1,7 @@
 #include <cs50.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Max voters and candidates
 #define MAX_VOTERS 100
@@ -8,6 +9,8 @@
 
 // preferences[i][j] is jth preference for voter i
 int preferences[MAX_VOTERS][MAX_CANDIDATES];
+// Example
+// preferences[0][1]; this means that the first voter has first preference for the first candidate.
 
 // Candidates have name, vote count, eliminated status
 typedef struct
@@ -74,14 +77,14 @@ int main(int argc, char *argv[])
         // Query for each rank
         for (int j = 0; j < candidate_count; j++)
         {
-            string name = get_string("Rank %i: ", j + 1);
+            string name = get_string("Rank %d: ", j + 1);
 
             // Record vote, unless it's invalid
             if (!vote(i, j, name))
             {
                 fprintf(stderr, "Invalid vote.\n");
                 return EXIT_FAILURE;
-            }
+            } 
         }
 
         printf("\n");
@@ -134,6 +137,17 @@ bool vote(int voter, int rank, string name)
 {
     // TODO
     // Check if candidate even exists
+    // within this function we're going to be populating the ranking two-dimensional array.
+    
+    // preferences[i][j] is jth preference for voter i
+    // int preferences[MAX_VOTERS][MAX_CANDIDATES];
+    for (int i = 0; i < candidate_count; i++) {
+        if (strcmp(candidates[i].name, name) == 0) {
+            // i here represents the position of candidate 'name';
+            preferences[voter][rank] = i; 
+            return true;
+        }
+    }
     return false;
 }
 
