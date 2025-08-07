@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
 
         // Check if election has been won
         bool won = print_winner();
+        
         if (won)
         {
             break;
@@ -155,6 +156,18 @@ bool vote(int voter, int rank, string name)
 void tabulate(void)
 {
     // TODO
+    // Simply means counting votes.
+    // We will be modifying candidates[i].votes;
+    // preferences[i][j] is jth preference for voter i
+    // recall that preference[i][0] is the candidate index for the first preference of voter i
+    
+    static int current_rank = 0;
+    for (int i = 0; i < voter_count; i++) {
+        if (!candidates[preferences[i][current_rank]].eliminated) {
+            candidates[preferences[i][current_rank]].votes += 1;
+        }
+    }
+    current_rank++;
     return;
 }
 
@@ -162,6 +175,25 @@ void tabulate(void)
 bool print_winner(void)
 {
     // TODO
+    // if candidates[i].votes > 50 % of total sum of votes (out of all candidates)
+    // this means that candidates[i] is the winner
+    int total_votes; // total number of votes, is voter_count
+    // the person with more votes, does it represent more than 50% of voter_count
+    // if so we have a winner, if not, we shall continue the while loop and
+    // eliminate someone
+    
+    // Assumes the first candidate has the most votes intially
+    int max_vote;
+
+    //  NOTE: I think candidate[i + 1] is getting out of bounds
+    for (int i = 0; i < candidate_count - 1; i++) {
+        max_vote = candidates[i].votes;
+        
+        for (int j = i + 1; j < candidate_count; j++) {
+            if (candidates[j].votes > candidates[i].votes)
+                max_vote = candidates[j].votes;
+        }
+    }
     return false;
 }
 
