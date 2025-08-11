@@ -3,6 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+A runoff is a follow-up election held when no candidate achieves the required majority in the 
+initial vote (more than 50% in this program). The runoff usually involves the top two candidates 
+competing to decide the winner (not in this program).
+*/
+
 // Max voters and candidates
 #define MAX_VOTERS 100
 #define MAX_CANDIDATES 9
@@ -174,33 +180,45 @@ void tabulate(void)
 // Print the winner of the election, if there is one
 bool print_winner(void)
 {
-    // TODO
-    // if candidates[i].votes > 50 % of total sum of votes (out of all candidates)
-    // this means that candidates[i] is the winner
-    int total_votes; // total number of votes, is voter_count
-    // the person with more votes, does it represent more than 50% of voter_count
-    // if so we have a winner, if not, we shall continue the while loop and
-    // eliminate someone
+    // Assumes the first candidate has the most votes initially
+    int max_vote = candidates[0].votes;
+    int cand_index = 0;
     
-    // Assumes the first candidate has the most votes intially
-    int max_vote;
-
-    //  NOTE: I think candidate[i + 1] is getting out of bounds
     for (int i = 0; i < candidate_count - 1; i++) {
-        max_vote = candidates[i].votes;
-        
-        for (int j = i + 1; j < candidate_count; j++) {
-            if (candidates[j].votes > candidates[i].votes)
-                max_vote = candidates[j].votes;
+        if (candidates[i].votes < candidates[i + 1].votes) {
+            max_vote = candidates[i + 1].votes;
+            cand_index = i + 1;
         }
     }
-    return false;
+    
+    // does max_vote represents more than 50% of voter_count?
+    if (max_vote > voter_count / 2) {
+        printf("%s\n", candidates[cand_index].name);
+        return true;
+    }
+
+    // if no candidate wins 
+    return false; 
 }
 
 // Return the minimum number of votes any remaining candidate has
 int find_min(void)
 {
     // TODO
+    int min = 0; // the number of votes from the candidate with the least amount of votes
+
+    // finds first valid candidate 
+    for (int i = 0; i < candidate_count; i++) {
+        if (!candidates[i].eliminated) {
+            if (candidates[i].votes < min) 
+                min = candidates[i].votes;
+        }
+    }
+
+    for (int i = 0; i < candidate_count; i++) {
+        if (min < candidates[i])
+        candidates[i].votes;
+    }
     return 0;
 }
 
@@ -215,5 +233,6 @@ bool is_tie(int min)
 void eliminate(int min)
 {
     // TODO
+    // if anybody gets eliminated we have to subtract one from candidate_count
     return;
 }
