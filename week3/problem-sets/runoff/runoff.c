@@ -16,7 +16,9 @@ competing to decide the winner (not in this program).
 // preferences[i][j] is jth preference for voter i
 int preferences[MAX_VOTERS][MAX_CANDIDATES];
 // Example
-// preferences[0][1]; this means that the first voter has first preference for the first candidate.
+
+// Stores the index for prefered candidate
+// Preferences[0][0] = 0; this means that the first voter has first preference for the first candidate.
 
 // Candidates have name, vote count, eliminated status
 typedef struct
@@ -79,7 +81,6 @@ int main(int argc, char *argv[])
     // Keep querying for votes
     for (int i = 0; i < voter_count; i++)
     {
-
         // Query for each rank
         for (int j = 0; j < candidate_count; j++)
         {
@@ -105,8 +106,7 @@ int main(int argc, char *argv[])
         // Check if election has been won
         bool won = print_winner();
         
-        if (won)
-        {
+        if (won) {
             break;
         }
 
@@ -115,12 +115,9 @@ int main(int argc, char *argv[])
         bool tie = is_tie(min);
 
         // If tie, everyone wins
-        if (tie)
-        {
-            for (int i = 0; i < candidate_count; i++)
-            {
-                if (!candidates[i].eliminated)
-                {
+        if (tie) {
+            for (int i = 0; i < candidate_count; i++) {
+                if (!candidates[i].eliminated) {
                     printf("%s\n", candidates[i].name);
                 }
             }
@@ -131,8 +128,7 @@ int main(int argc, char *argv[])
         eliminate(min);
 
         // Reset vote counts back to zero
-        for (int i = 0; i < candidate_count; i++)
-        {
+        for (int i = 0; i < candidate_count; i++) {
             candidates[i].votes = 0;
         }
     }
@@ -161,19 +157,23 @@ bool vote(int voter, int rank, string name)
 // Tabulate votes for non-eliminated candidates
 void tabulate(void)
 {
-    // TODO
     // Simply means counting votes.
     // We will be modifying candidates[i].votes;
     // preferences[i][j] is jth preference for voter i
     // recall that preference[i][0] is the candidate index for the first preference of voter i
+
+    int i = 0;
     
-    static int current_rank = 0;
-    for (int i = 0; i < voter_count; i++) {
-        if (!candidates[preferences[i][current_rank]].eliminated) {
-            candidates[preferences[i][current_rank]].votes += 1;
+    do {
+        for (int j = 0; j < candidate_count; j++) {
+            // if candidate is not elimated we increment one vote.
+            if (!candidates[preferences[i][j]].eliminated) {
+                candidates[preferences[i][j]].votes++;
+                break;
+            }
         }
-    }
-    current_rank++;
+        i++;
+    } while (i < voter_count);
     return;
 }
 
@@ -205,28 +205,33 @@ bool print_winner(void)
 int find_min(void)
 {
     // TODO
-    int min = 0; // the number of votes from the candidate with the least amount of votes
+    // Linear Search
+    int min_vote = 0;
 
-    // finds first valid candidate 
-    for (int i = 0; i < candidate_count; i++) {
+    for (int i = 0; i < candidate_count - 1; i++) {
         if (!candidates[i].eliminated) {
-            if (candidates[i].votes < min) 
-                min = candidates[i].votes;
+            if (candidates[i].votes > candidates[i + 1].votes) {
+                min_vote = candidates[i + 1].votes;
+            }
         }
     }
-
-    for (int i = 0; i < candidate_count; i++) {
-        if (min < candidates[i])
-        candidates[i].votes;
-    }
-    return 0;
+    //  NOTE: We should not return min_vote if all candidates are tied (name amount of votes)
+    return min_vote;
 }
 
 // Return true if the election is tied between all candidates, false otherwise
 bool is_tie(int min)
 {
     // TODO
-    return false;
+    // Potential bug here
+    for (int i = 0; i < candidate_count - 1; i++) {
+        if (!candidates[i].eliminated && !candidates[i + 1].eliminated) {
+            if (candidates[i].votes != candidates[i + 1].votes) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 // Eliminate the candidate (or candidates) in last place
@@ -234,5 +239,11 @@ void eliminate(int min)
 {
     // TODO
     // if anybody gets eliminated we have to subtract one from candidate_count
+    for (int i = 0; i < candidate_count; i++) {
+        if (!candidates[i].eliminated && candidates[i].votes == min) {
+            candidates[i].eliminated = true; 
+            candidate_count--;
+        }
+    }
     return;
 }
