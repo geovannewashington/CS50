@@ -204,18 +204,23 @@ bool print_winner(void)
 // Return the minimum number of votes any remaining candidate has
 int find_min(void)
 {
-    // TODO
-    // Linear Search
-    int min_vote = 0;
+    int min_vote, cand_index;
 
-    for (int i = 0; i < candidate_count - 1; i++) {
+    for (int i = 0; i < candidate_count; i++) {
         if (!candidates[i].eliminated) {
-            if (candidates[i].votes > candidates[i + 1].votes) {
-                min_vote = candidates[i + 1].votes;
-            }
+            // Initializes min_vote with the first non-eliminated candidate vote count;
+            min_vote = candidates[i].votes; 
+            cand_index = i;
         }
     }
-    //  NOTE: We should not return min_vote if all candidates are tied (name amount of votes)
+
+    for (int i = cand_index; i < candidate_count; i++) {
+        if (!candidates[i].eliminated) {
+            if (candidates[i].votes < min_vote) 
+                min_vote = candidates[i].votes; // update min if a smaller element is found
+        }
+    }
+
     return min_vote;
 }
 
@@ -242,8 +247,6 @@ void eliminate(int min)
     for (int i = 0; i < candidate_count; i++) {
         if (!candidates[i].eliminated && candidates[i].votes == min) {
             candidates[i].eliminated = true; 
-            candidate_count--;
         }
     }
-    return;
 }
