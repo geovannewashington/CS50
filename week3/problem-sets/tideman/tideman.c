@@ -105,7 +105,8 @@ bool vote(int rank, string name, int ranks[])
 {
     for (int i = 0; i < candidate_count; i++) {
         if (strcmp(name, candidates[i]) == 0) { // candidate was found.
-            ranks[rank] = 
+            ranks[rank] = i;
+            return true;
         }
     }
     return false;
@@ -114,7 +115,14 @@ bool vote(int rank, string name, int ranks[])
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    // TODO
+    // we have to populate the global array: 'preferences'
+    // preferences[i][j] is number of voters who prefer i over j
+    // preferenes[i] -> where i represents each candidate index 
+    // int preferences[MAX][MAX];
+    //  NOTE: since the index is the order of each candidate in CLA
+    //  preferences[0][0] -> n. of voters who prefer Alice over Alice == 0
+    //  preferences[1][1] -> n. of voters who prefer Bob over Bob == 0
+    //  preferences[2][2] -> n. of voters who prefer Charlie over Charlie == 0
     return;
 }
 
