@@ -93,10 +93,16 @@ int main(int argc, string argv[])
         printf("\n");
     }
 
-    add_pairs();
+    for (int i = 0; i < candidate_count; i++) {
+        for (int j = 0; j < candidate_count; j++) {
+            printf("%d ", preferences[i][j]);
+        }
+        printf("\n");
+    }
+    /* add_pairs();
     sort_pairs();
     lock_pairs();
-    print_winner();
+    print_winner(); */
     return EXIT_SUCCESS;
 }
 
@@ -117,12 +123,17 @@ void record_preferences(int ranks[])
 {
     // we have to populate the global array: 'preferences'
     // preferences[i][j] is number of voters who prefer i over j
-    // preferenes[i] -> where i represents each candidate index 
+    // preferences[i] -> where i represents each candidate index 
     // int preferences[MAX][MAX];
     //  NOTE: since the index is the order of each candidate in CLA
     //  preferences[0][0] -> n. of voters who prefer Alice over Alice == 0
     //  preferences[1][1] -> n. of voters who prefer Bob over Bob == 0
     //  preferences[2][2] -> n. of voters who prefer Charlie over Charlie == 0
+    for (int i = 0; i < candidate_count; i++) {
+        for (int j = i + 1; j < candidate_count; j++) {
+            preferences[ranks[i]][ranks[j]] += 1;
+        }
+    }
     return;
 }
 
