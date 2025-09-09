@@ -19,11 +19,12 @@ typedef struct
 {
     int winner;
     int loser;
+    int strength;
 } pair;
 
 // Array of candidates
 char *candidates[MAX];
-pair pairs[MAX * (MAX - 1) / 2];
+pair pairs[MAX * (MAX - 1) / 2]; // 9 * (8) / 2 -> 36
 
 int pair_count;
 int candidate_count;
@@ -35,6 +36,14 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
+
+void print_pairs()
+{
+    for (int i = 0; i < candidate_count; i++) {
+        printf("%s - index: %d\n", candidates[i], i); 
+        printf("winner index: %d | loser index: %d\n", pairs[i].winner, pairs[i].loser);
+    }
+}
 
 int main(int argc, string argv[])
 {
@@ -93,16 +102,11 @@ int main(int argc, string argv[])
         printf("\n");
     }
 
-    for (int i = 0; i < candidate_count; i++) {
-        for (int j = 0; j < candidate_count; j++) {
-            printf("%d ", preferences[i][j]);
-        }
-        printf("\n");
-    }
-    /* add_pairs();
-    sort_pairs();
+    add_pairs();
+    print_pairs();
+    /* sort_pairs();
     lock_pairs();
-    print_winner(); */
+    print_winner();  */
     return EXIT_SUCCESS;
 }
 
@@ -140,7 +144,15 @@ void record_preferences(int ranks[])
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // TODO
+    for (int i = 0; i < candidate_count; i++) {
+        for (int j = 0; j < candidate_count; j++)  {
+            if (preferences[i][j] > preferences[j][i]) { /* First candidate wins over the second */
+                pairs[pair_count].winner = i; 
+                pairs[pair_count].loser = j; 
+                pair_count++;
+            }
+        }
+    }
     return;
 }
 
