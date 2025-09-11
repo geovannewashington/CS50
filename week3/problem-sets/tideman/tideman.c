@@ -40,8 +40,7 @@ void print_winner(void);
 void print_pairs()
 {
     for (int i = 0; i < candidate_count; i++) {
-        printf("%s - index: %d\n", candidates[i], i); 
-        printf("winner index: %d | loser index: %d\n", pairs[i].winner, pairs[i].loser);
+        printf("winner index: %d | loser index: %d | pair strength: %d\n", pairs[i].winner, pairs[i].loser, pairs[i].strength);
     }
 }
 
@@ -149,6 +148,7 @@ void add_pairs(void)
             if (preferences[i][j] > preferences[j][i]) { /* First candidate wins over the second */
                 pairs[pair_count].winner = i; 
                 pairs[pair_count].loser = j; 
+                pairs[pair_count].strength = preferences[i][j] - preferences[j][i];
                 pair_count++;
             }
         }
