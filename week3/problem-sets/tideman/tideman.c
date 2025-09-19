@@ -36,6 +36,9 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
+void merge_sort(int *arr, int left, int right);
+void merge(int *arr, int left, int mid, int right);
+
 
 void print_pairs()
 {
@@ -159,7 +162,10 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // TODO
+    // pairs[index].strength;
+    for (int i = 0; i < pair_count; i++) {
+        
+    }
     return;
 }
 
@@ -175,4 +181,63 @@ void print_winner(void)
 {
     // TODO
     return;
+}
+
+void merge_sort(int *arr, int left, int right)
+{
+    int mid;
+    
+    // left < right is answering: is this one number?
+    if (left < right) {
+        mid = (left + right) / 2; // 2 index
+        merge_sort(arr, left, mid);
+        merge_sort(arr, mid + 1, right);
+        merge(arr, left, mid, right);
+    }
+}
+
+void merge(int *arr, int left, int mid, int right)
+{
+    int size_left = mid - left + 1; // 2 + 0 + 1 = 3
+    int size_right = right - mid;   // 4 - 2 = 2  
+    
+    int arr_left[size_left];   // can hold up to three elements in this case
+    int arr_right[size_right]; // can hold up to two elements in this case
+    
+    // Copy data to temporary arrays  
+    // loops 'size_left' times
+    for (int i = 0; i < size_left; i++) {
+        arr_left[i] = arr[left + i];
+    }
+
+    // loops 'size_right' times
+    for (int i = 0; i < size_right; i++) {
+        arr_right[i] = arr[mid + 1 + i];
+    }
+    
+    // Merge the temporary arrays back into arr[left...right]
+    int i = 0, j = 0, k = left;
+    
+    while (i < size_left && j < size_right) {
+        if (arr_left[i] <= arr_right[j]) {
+            arr[k] = arr_right[j++];
+        } else {
+            arr[k] = arr_left[i++]; 
+        } 
+        k++;
+    }
+    
+    // Copy the remaining elements of arr_left, if any
+    while (i < size_left) {
+        arr[k] = arr_left[i];
+        i++;
+        k++;
+    }
+
+    // Copy the remaining elements of arr_right, if any
+    while (j < size_right) {
+        arr[k] = arr_right[j];
+        j++;
+        k++;
+    }
 }
