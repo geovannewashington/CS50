@@ -36,8 +36,8 @@ void add_pairs(void);
 void sort_pairs(void);
 void lock_pairs(void);
 void print_winner(void);
-void merge_sort(int *arr, int left, int right);
-void merge(int *arr, int left, int mid, int right);
+void merge_sort(pair *arr, int left, int right);
+void merge(pair *arr, int left, int mid, int right);
 
 
 void print_pairs()
@@ -105,10 +105,10 @@ int main(int argc, string argv[])
     }
 
     add_pairs();
-    print_pairs();
-    /* sort_pairs();
-    lock_pairs();
-    print_winner();  */
+    sort_pairs();
+    
+    // lock_pairs();
+    // print_winner(); 
     return EXIT_SUCCESS;
 }
 
@@ -162,10 +162,9 @@ void add_pairs(void)
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
+    // We need to sort an array of structs based on a field of the struct.
     // pairs[index].strength;
-    for (int i = 0; i < pair_count; i++) {
-        
-    }
+    merge_sort(pairs, 0, pair_count - 1);
     return;
 }
 
@@ -183,7 +182,7 @@ void print_winner(void)
     return;
 }
 
-void merge_sort(int *arr, int left, int right)
+void merge_sort(pair *arr, int left, int right)
 {
     int mid;
     
@@ -196,13 +195,13 @@ void merge_sort(int *arr, int left, int right)
     }
 }
 
-void merge(int *arr, int left, int mid, int right)
+void merge(pair *arr, int left, int mid, int right)
 {
     int size_left = mid - left + 1; // 2 + 0 + 1 = 3
     int size_right = right - mid;   // 4 - 2 = 2  
     
-    int arr_left[size_left];   // can hold up to three elements in this case
-    int arr_right[size_right]; // can hold up to two elements in this case
+    pair arr_left[size_left];   // can hold up to three elements in this case
+    pair arr_right[size_right]; // can hold up to two elements in this case
     
     // Copy data to temporary arrays  
     // loops 'size_left' times
@@ -219,7 +218,7 @@ void merge(int *arr, int left, int mid, int right)
     int i = 0, j = 0, k = left;
     
     while (i < size_left && j < size_right) {
-        if (arr_left[i] <= arr_right[j]) {
+        if (arr_left[i].strength <= arr_right[j].strength) {
             arr[k] = arr_right[j++];
         } else {
             arr[k] = arr_left[i++]; 
