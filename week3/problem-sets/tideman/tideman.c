@@ -47,6 +47,17 @@ void print_pairs()
     }
 }
 
+void print_locked()
+{
+    for (int i = 0; i < candidate_count; i++)  {
+        for (int j = 0; j < candidate_count; j++) {
+            printf ("%d ", locked[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
 int main(int argc, string argv[])
 {
     // Check for invalid usage
@@ -106,9 +117,10 @@ int main(int argc, string argv[])
 
     add_pairs();
     sort_pairs();
-    
-    // lock_pairs();
-    // print_winner(); 
+    // print_pairs(); 
+    lock_pairs();
+    // print_locked();
+    print_winner(); 
     return EXIT_SUCCESS;
 }
 
@@ -171,14 +183,65 @@ void sort_pairs(void)
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
+    // Reminder: each struct of pairs contains the index for winner and loser...
+    // For each pair (pairs) 
+
+    // lock_pairs[i][j] = true | this means candidate i is 'locked' over candidate j 
+    // candidate i has lost to j in a direct confront
+    
+    // Reminder: at this point pairs arrays is already sorted
+    
+    bool should_skip = false;
+    for (int i = 0; i < candidate_count; i++)
+    {
+        for (int j = 0; j < candidate_count; j++)
+        {
+            // For each pair...
+            // pair_count == candidate_count, right? I think so...
+            // if something... if no cycle... if the 'row' doesn't already contain a true value...
+            
+            for (int k = 0; k < candidate_count; k++) {
+                if (locked[pairs[j].loser][k] == true) {// pairs[j].loser is already pointing to someone... 
+                    for (int m = 0; m < candidate_count; m++) {
+                        if (locked[k][m] == true) {
+                            if (m == pairs[j].winner) // That someone is poiting to current me...
+                                should_skip = true;
+                        }
+                    }
+                } 
+            }
+            if (should_skip) continue;
+            locked[pairs[j].winner][pairs[j].loser] = true;
+        }
+    }
+    /* 
+    // For each pair...
+    for (int i = 0; i < pair_count; i++) {
+        // if something... if no cycle... if the 'row' doesn't already contain a true value...
+        locked[pairs[i].loser][pairs[i].winner] = true;
+    }
+    */
     return;
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    // The winner is the i that every j is false...
+    int winner_index;
+    bool lost = false;
+
+    for (int i = 0; i < candidate_count; i++) {
+        for (int j = 0; j < candidate_count; j++) {
+            if (locked[j][i] == true) 
+                lost = true;
+        }
+        
+        if (!lost) 
+            winner_index = i;
+    }
+
+    printf("%s\n", candidates[winner_index]);
     return;
 }
 
