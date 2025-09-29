@@ -184,15 +184,14 @@ void sort_pairs(void)
 void lock_pairs(void)
 {
     // Reminder: each struct of pairs contains the index for winner and loser...
-    // For each pair (pairs) 
-
-    // lock_pairs[i][j] = true | this means candidate i is 'locked' over candidate j 
-    // candidate i has lost to j in a direct confront
-    
     // Reminder: at this point pairs arrays is already sorted
+    // Lock_pairs[i][j] = true | this means candidate i is 'locked' over candidate j 
+    // Candidate i has lost to j in a direct confront
     
-    bool should_skip = false;
-    for (int i = 0; i < candidate_count; i++)
+    //  BUG: Not locking all the pairs it should when there are no cycles.    
+    //  TODO: Think of another logic to prevent cycles...
+    
+    /* for (int i = 0; i < candidate_count; i++)
     {
         for (int j = 0; j < candidate_count; j++)
         {
@@ -201,7 +200,7 @@ void lock_pairs(void)
             // if something... if no cycle... if the 'row' doesn't already contain a true value...
             
             for (int k = 0; k < candidate_count; k++) {
-                if (locked[pairs[j].loser][k] == true) {// pairs[j].loser is already pointing to someone... 
+                if (locked[pairs[j].loser][k] == true) { // pairs[j].loser is already pointing to someone... 
                     for (int m = 0; m < candidate_count; m++) {
                         if (locked[k][m] == true) {
                             if (m == pairs[j].winner) // That someone is poiting to current me...
@@ -213,14 +212,27 @@ void lock_pairs(void)
             if (should_skip) continue;
             locked[pairs[j].winner][pairs[j].loser] = true;
         }
-    }
-    /* 
+    } */
+    
+    bool should_skip = false;
+    
     // For each pair...
     for (int i = 0; i < pair_count; i++) {
-        // if something... if no cycle... if the 'row' doesn't already contain a true value...
-        locked[pairs[i].loser][pairs[i].winner] = true;
+        // Verify if not cycle...
+        for (int j = 0; j < candidate_count; j++) {
+            if (locked[pairs[i].loser][j] == true) { // pairs[j].loser is already pointing to someone... 
+                for (int k = 0; k < candidate_count; k++) {
+                    if (locked[j][k] == true) {
+                        if (k == pairs[i].winner) // That someone is poiting to current me...
+                            should_skip = true;
+                    }
+                }
+            } 
+        }
+        if (should_skip) continue;
+        locked[pairs[i].winner][pairs[i].loser] = true;
     }
-    */
+   
     return;
 }
 
