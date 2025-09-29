@@ -119,8 +119,8 @@ int main(int argc, string argv[])
     sort_pairs();
     // print_pairs(); 
     lock_pairs();
-    // print_locked();
-    print_winner(); 
+    print_locked();
+    // print_winner(); 
     return EXIT_SUCCESS;
 }
 
@@ -180,6 +180,24 @@ void sort_pairs(void)
     return;
 }
 
+// A recursive function that checks for cycles
+// returns true if cycle found, false if no cycle found...
+bool check_for_cycle(int winner, int loser, int pair_index) 
+{
+    // Define base case...
+    if (pair_index == pair_count) 
+        return false;
+
+    for (int i = 0; i < pair_count; i++) {
+        if (locked[loser][i]) { // loser already points to someone...
+            if (i == winner) {
+                return true;            
+            } 
+            check_for_cycle(winner, i, pair_index++);
+        }
+    }
+}
+
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
@@ -188,48 +206,34 @@ void lock_pairs(void)
     // Lock_pairs[i][j] = true | this means candidate i is 'locked' over candidate j 
     // Candidate i has lost to j in a direct confront
     
-    //  BUG: Not locking all the pairs it should when there are no cycles.    
-    //  TODO: Think of another logic to prevent cycles...
-    
-    /* for (int i = 0; i < candidate_count; i++)
-    {
-        for (int j = 0; j < candidate_count; j++)
-        {
-            // For each pair...
-            // pair_count == candidate_count, right? I think so...
-            // if something... if no cycle... if the 'row' doesn't already contain a true value...
-            
-            for (int k = 0; k < candidate_count; k++) {
-                if (locked[pairs[j].loser][k] == true) { // pairs[j].loser is already pointing to someone... 
-                    for (int m = 0; m < candidate_count; m++) {
-                        if (locked[k][m] == true) {
-                            if (m == pairs[j].winner) // That someone is poiting to current me...
-                                should_skip = true;
-                        }
-                    }
-                } 
-            }
-            if (should_skip) continue;
-            locked[pairs[j].winner][pairs[j].loser] = true;
-        }
-    } */
+    //  BUG: skips the final pair if it creates a cycle...
     
     bool should_skip = false;
     
     // For each pair...
     for (int i = 0; i < pair_count; i++) {
-        // Verify if not cycle...
-        for (int j = 0; j < candidate_count; j++) {
-            if (locked[pairs[i].loser][j] == true) { // pairs[j].loser is already pointing to someone... 
-                for (int k = 0; k < candidate_count; k++) {
-                    if (locked[j][k] == true) {
-                        if (k == pairs[i].winner) // That someone is poiting to current me...
-                            should_skip = true;
+        // Verify if no cycle...
+        
+        // 1. Question: Does pairs[i].loser already points to someone?
+        /* for (int j = 0; j < pair_count; j++) {
+            if (locked[pairs[i].loser][j]) { // pairs[i].loser points to someone 
+                // 2. Question: Does j (someone) pointes to pairs[i].winner? 
+                for (int k = 0; k < pair_count; k++) {
+                    if (locked[j][k] && k == pairs[i].winner) {
+                        should_skip = true;
+                        break;
                     }
-                }
-            } 
+                } 
+                break;
+            }
+        } */
+        should_skip = check_for_cycle(pairs[i].winner, pairs[i].loser, 0);
+
+        if (should_skip) {
+            should_skip = false;
+            continue;
         }
-        if (should_skip) continue;
+        
         locked[pairs[i].winner][pairs[i].loser] = true;
     }
    
