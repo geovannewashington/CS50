@@ -38,7 +38,7 @@ void lock_pairs(void);
 void print_winner(void);
 void merge_sort(pair *arr, int left, int right);
 void merge(pair *arr, int left, int mid, int right);
-
+bool check_for_cycle(int winner, int loser, int pair_index);
 
 void print_pairs()
 {
@@ -119,7 +119,7 @@ int main(int argc, string argv[])
     sort_pairs();
     // print_pairs(); 
     lock_pairs();
-    print_locked();
+    // print_locked();
     // print_winner(); 
     return EXIT_SUCCESS;
 }
@@ -182,18 +182,23 @@ void sort_pairs(void)
 
 // A recursive function that checks for cycles
 // returns true if cycle found, false if no cycle found...
-bool check_for_cycle(int winner, int loser, int pair_index) 
+
+// winner -> winner index of current pair 
+// loser  -> loser winner of current pair 
+bool check_for_cycle(int winner, int loser, int cand_index) 
 {
-    // Define base case...
-    if (pair_index == pair_count) 
+    if (cand_index >= candidate_count) 
         return false;
 
-    for (int i = 0; i < pair_count; i++) {
-        if (locked[loser][i]) { // loser already points to someone...
+    for (int i = 0; i < candidate_count; i++) {
+        if (locked[loser][i]) { // Does loser points to someone? 
             if (i == winner) {
-                return true;            
-            } 
-            check_for_cycle(winner, i, pair_index++);
+                return true; // There was a cycle
+            } else {
+                return check_for_cycle(winner, i, cand_index++);
+            }
+        } else {
+            return false; 
         }
     }
 }
@@ -206,32 +211,16 @@ void lock_pairs(void)
     // Lock_pairs[i][j] = true | this means candidate i is 'locked' over candidate j 
     // Candidate i has lost to j in a direct confront
     
-    //  BUG: skips the final pair if it creates a cycle...
-    
     bool should_skip = false;
     
     // For each pair...
     for (int i = 0; i < pair_count; i++) {
         // Verify if no cycle...
-        
-        // 1. Question: Does pairs[i].loser already points to someone?
-        /* for (int j = 0; j < pair_count; j++) {
-            if (locked[pairs[i].loser][j]) { // pairs[i].loser points to someone 
-                // 2. Question: Does j (someone) pointes to pairs[i].winner? 
-                for (int k = 0; k < pair_count; k++) {
-                    if (locked[j][k] && k == pairs[i].winner) {
-                        should_skip = true;
-                        break;
-                    }
-                } 
-                break;
-            }
-        } */
         should_skip = check_for_cycle(pairs[i].winner, pairs[i].loser, 0);
 
-        if (should_skip) {
-            should_skip = false;
-            continue;
+        if (should_skip) {       // Check_for_cycle returned true, there was a cycle
+            should_skip = false; // Reset the flag
+            continue; 
         }
         
         locked[pairs[i].winner][pairs[i].loser] = true;
