@@ -38,7 +38,7 @@ void lock_pairs(void);
 void print_winner(void);
 void merge_sort(pair *arr, int left, int right);
 void merge(pair *arr, int left, int mid, int right);
-bool check_for_cycle(int winner, int loser, int pair_index);
+bool check_for_cycle(int winner, int loser);
 
 void print_pairs()
 {
@@ -117,10 +117,11 @@ int main(int argc, string argv[])
 
     add_pairs();
     sort_pairs();
-    // print_pairs(); 
+    print_pairs(); 
     lock_pairs();
-    // print_locked();
-    // print_winner(); 
+    print_locked();
+    // printf("Chegue aqui...");
+    print_winner(); 
     return EXIT_SUCCESS;
 }
 
@@ -185,22 +186,16 @@ void sort_pairs(void)
 
 // winner -> winner index of current pair 
 // loser  -> loser winner of current pair 
-bool check_for_cycle(int winner, int loser, int cand_index) 
+//  TODO:: Apply DFS algorithm
+bool check_for_cycle(int winner, int loser) 
 {
-    if (cand_index >= candidate_count) 
-        return false;
-
     for (int i = 0; i < candidate_count; i++) {
-        if (locked[loser][i]) { // Does loser points to someone? 
-            if (i == winner) {
-                return true; // There was a cycle
-            } else {
-                return check_for_cycle(winner, i, cand_index++);
-            }
-        } else {
-            return false; 
+        if (locked[loser][i] == true) {
+            if (i == winner) return true;
+            if (check_for_cycle(winner, i)) return true;
         }
     }
+    return false;
 }
 
 // Lock pairs into the candidate graph in order, without creating cycles
@@ -211,19 +206,12 @@ void lock_pairs(void)
     // Lock_pairs[i][j] = true | this means candidate i is 'locked' over candidate j 
     // Candidate i has lost to j in a direct confront
     
-    bool should_skip = false;
-    
     // For each pair...
     for (int i = 0; i < pair_count; i++) {
         // Verify if no cycle...
-        should_skip = check_for_cycle(pairs[i].winner, pairs[i].loser, 0);
-
-        if (should_skip) {       // Check_for_cycle returned true, there was a cycle
-            should_skip = false; // Reset the flag
-            continue; 
+        if (!check_for_cycle(pairs[i].winner, pairs[i].loser)) {
+            locked[pairs[i].winner][pairs[i].loser] = true;
         }
-        
-        locked[pairs[i].winner][pairs[i].loser] = true;
     }
    
     return;
@@ -232,20 +220,26 @@ void lock_pairs(void)
 // Print the winner of the election
 void print_winner(void)
 {
-    // The winner is the i that every j is false...
-    int winner_index;
-    bool lost = false;
+    // 1. the winner is the i that every j is false...
+    int winner_index = 0; 
+    bool win = true;
 
     for (int i = 0; i < candidate_count; i++) {
         for (int j = 0; j < candidate_count; j++) {
-            if (locked[j][i] == true) 
-                lost = true;
+            if (locked[j][i]) { // candidate i loses to someone (j)
+                win = false;
+                break;
+            }
         }
         
-        if (!lost) 
-            winner_index = i;
+        if (win) {
+            winner_index = i;         
+            break;
+        } 
+        
+        win = true;
     }
-
+    
     printf("%s\n", candidates[winner_index]);
     return;
 }
