@@ -98,15 +98,3 @@ void print_winner(void)
     // printf("%d\n", max_vote);
     return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
