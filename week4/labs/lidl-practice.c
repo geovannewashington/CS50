@@ -6,7 +6,7 @@
 // --
 int simple_printf(const char *str);
 
-int main() 
+int main(void) 
 {
     // --
     // 1. Those two are equivalent, the first version is shorter shorter, the compiler automatically
